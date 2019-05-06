@@ -186,6 +186,76 @@ object ListProblems {
   }
 
 
+  def drop[A](n: Int, list: List[A]): List[A] = {
+    @tailrec def tailRecDrop[A](n: Int, list: List[A], acc: List[A]): List[A] = {
+      list match {
+        case Nil => acc
+        case head :: tail if n > 1 => tailRecDrop(n - 1, tail, acc ++ List(head))
+        case _ :: tail => acc ++ tail
+      }
+    }
+    tailRecDrop(n, list, Nil)
+  }
+
+  def split[A](length: Int, list: List[A]): (List[A], List[A]) = {
+    @tailrec def tailRecSplit[A](length: Int, list: List[A], acc: List[A]): (List[A], List[A]) = {
+      list match {
+        case Nil => (acc, Nil)
+        case head :: tail if length > 1 => tailRecSplit(length - 1, tail, acc ++ List(head))
+        case head :: tail => (acc ++ List(head), tail)
+      }
+    }
+    tailRecSplit(length, list, Nil)
+  }
+
+  def slice[A](i: Int, k: Int, list: List[A]): List[A] = {
+    @tailrec def tailRecSlice[A](i: Int, k: Int, list: List[A], acc: List[A]): List[A] = {
+      list match {
+        case Nil => acc
+        case _ :: tail if i > 1 => tailRecSlice(i - 1, k - 1, tail, acc)
+        case head :: tail if k > 1 => tailRecSlice(i, k - 1, tail, acc ++ List(head))
+        case head :: _ if i == k => acc ++ List(head)
+      }
+    }
+    tailRecSlice(i, k, list, Nil)
+  }
+
+  def left[A](n: Int, list: List[A]): List[A] = {
+    @tailrec def tailRecLeft(n: Int, list: List[A], acc: List[A]): List[A] = {
+      list match {
+        case Nil => acc
+        case head :: tail if n > 0 => tailRecLeft(n - 1, tail, acc ++ List(head))
+        case _ :: _ => acc
+      }
+    }
+    tailRecLeft(n, list, Nil)
+  }
+
+  def right[A](n: Int, list: List[A]): List[A] = {
+    @tailrec def tailRecRight(n: Int, list: List[A], acc: List[A]): List[A] = {
+      list match {
+        case Nil => acc
+        case head :: tail if n > 0 => tailRecRight(n - 1, tail, acc ++ List(head))
+        case head :: tail if n == 0 => tailRecRight(n, tail, acc.tail ++ List(head))
+      }
+    }
+    tailRecRight(n, list, Nil)
+  }
+
+  def rotateLeft[A](places: Int, original: List[A]): List[A] = {
+    @tailrec def tailRecRotate(places: Int, list: List[A], acc: List[A], size: Int): List[A] = {
+      list match {
+        /* limits the number of full rotation > 1 and < 2 */
+        case Nil if places > 0 => tailRecRotate(places % size, original, Nil, 0)
+        case Nil => acc
+        case head :: tail if places > 0 => tailRecRotate(places - 1, tail, acc ++ List(head), size + 1)
+        case _ => list ++ acc
+      }
+    }
+    if (original == Nil) Nil
+    else tailRecRotate(places, original, Nil, 0)
+  }
+
 
 }
 
