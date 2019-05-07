@@ -1,7 +1,6 @@
 package com.example._99problems
 
 import scala.annotation.tailrec
-import scala.collection.GenTraversableOnce
 
 object ListProblems {
 
@@ -285,6 +284,38 @@ object ListProblems {
     }
   }
 
+  def removeAt[A](n: Int, list: List[A]): List[A] = {
+    @tailrec def tailRecRemoveAt[A](n: Int, list: List[A], acc: List[A]): List[A] = {
+      list match {
+        case Nil => acc
+        case head :: tail if n > 1 => tailRecRemoveAt(n - 1, tail, acc ++ List(head))
+        case _ :: tail => acc ++ tail
+      }
+    }
+    tailRecRemoveAt(n, list, Nil)
+  }
+
+  def insertAt[A](n: Int, value: A, list: List[A]): List[A] = {
+    @tailrec def tailRecInsertAt[A](n: Int, value: A, list: List[A], acc: List[A]): List[A]= {
+      list match {
+        case Nil => acc ++ List(value)
+        case head :: tail if n > 1 => tailRecInsertAt(n - 1, value, tail, acc ++ List(head))
+        case _ :: _ => acc ++ List(value) ++ list
+      }
+    }
+    tailRecInsertAt(n, value, list, Nil)
+  }
+
+  def range(from: Int, to: Int): List[Int] = {
+    @tailrec def tailRecRange(from: Int, to: Int, acc: List[Int]): List[Int] = {
+      from match {
+        case _ if from < to => tailRecRange(from + 1, to, acc ++ List(from))
+        case _ if from > to => tailRecRange(from - 1, to, acc ++ List(from))
+        case _ => acc ++ List(from)
+      }
+    }
+    tailRecRange(from, to, Nil)
+  }
+
+
 }
-
-

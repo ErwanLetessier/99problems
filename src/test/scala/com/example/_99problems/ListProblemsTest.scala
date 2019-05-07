@@ -178,5 +178,28 @@ class ListProblemsTest extends FunSuite with Matchers {
     rotateRight(-2, List(5, 6, 7, 8, 9)) shouldBe List(7, 8, 9, 5, 6)
   }
 
+  test("20 should remove n th element") {
+    removeAt(1, List()) shouldBe Nil
+    removeAt(1, List(4)) shouldBe Nil
+    removeAt(2, List(6)) shouldBe List(6)
+    removeAt(2, List(1, 2, 3, 4)) shouldBe List(1, 3, 4)
+  }
+
+  test("21 should insert value at n th position (starting from 1)") {
+    insertAt(1, 99, List()) shouldBe List(99)
+    insertAt(1, 99, List(5, 8)) shouldBe List(99, 5, 8)
+    insertAt(2, 99, List(5, 8)) shouldBe List(5, 99, 8)
+    insertAt(5, 99, List(5, 8)) shouldBe List(5, 8, 99)
+    insertAt(-4, 99, List(5, 8)) shouldBe List(99, 5, 8)
+  }
+
+  test("22 should return a list containing all integers in range") {
+    range(1, 1) shouldBe List(1)
+    range(7, 12) shouldBe List(7, 8, 9, 10, 11, 12)
+    range(11, 8) shouldBe List(11, 10, 9, 8)
+  }
+
+
+
 }
 
