@@ -252,8 +252,16 @@ object ListProblems {
         case _ => list ++ acc
       }
     }
-    if (original == Nil) Nil
-    else tailRecRotate(places, original, Nil, 0)
+    original match {
+      case list @ Nil => list
+      case list @ _ :: Nil => list
+      case list @ _ =>
+        places match {
+          case i if i > 0 => tailRecRotate(places, list, Nil, 0)
+          case i if i < 0 => rotateRight(- places, list)
+          case _ => list
+        }
+    }
   }
 
   def rotateRight[A](places: Int, original: List[A]): List[A] = {
@@ -266,13 +274,16 @@ object ListProblems {
       }
     }
     original match {
-      case list@ Nil => list
-      case list@ _:: Nil => list
-      case list@ _ => tailRecRotate(places, list, Nil, Nil, 0)
+      case list @ Nil => list
+      case list @ _ :: Nil => list
+      case list @ _ =>
+        places match {
+          case i if i > 0 => tailRecRotate(places, list, Nil, Nil, 0)
+          case i if i < 0 => rotateLeft(- places, list)
+          case _ => list
+        }
     }
-
   }
-
 
 }
 

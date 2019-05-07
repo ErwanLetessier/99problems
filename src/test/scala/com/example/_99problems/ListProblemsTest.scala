@@ -162,6 +162,7 @@ class ListProblemsTest extends FunSuite with Matchers {
     rotateLeft(2, List(5, 6, 7)) shouldBe List(7, 5, 6)
     rotateLeft(1, List(5, 6, 7)) shouldBe List(6, 7, 5)
     rotateLeft(2, List(5, 6, 7, 8, 9)) shouldBe List(7, 8, 9, 5, 6)
+    rotateLeft(-2, List(5, 6, 7, 8, 9)) shouldBe List(8, 9, 5, 6, 7)
   }
 
   test("19-1 should return list rotated by n places to the right") {
@@ -174,6 +175,7 @@ class ListProblemsTest extends FunSuite with Matchers {
     rotateRight(2, List(5, 6, 7)) shouldBe List(6, 7, 5)
     rotateRight(1, List(5, 6, 7)) shouldBe List(7, 5, 6)
     rotateRight(2, List(5, 6, 7, 8, 9)) shouldBe List(8, 9, 5, 6, 7)
+    rotateRight(-2, List(5, 6, 7, 8, 9)) shouldBe List(7, 8, 9, 5, 6)
   }
 
 }
