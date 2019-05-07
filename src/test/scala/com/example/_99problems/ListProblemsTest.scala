@@ -2,11 +2,11 @@ package com.example._99problems
 
 import org.scalatest.FunSuite
 import org.scalatest.Matchers
-
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-
 import ListProblems._
+
+import scala.util.Random
 
 @RunWith(classOf[JUnitRunner])
 class ListProblemsTest extends FunSuite with Matchers {
@@ -199,6 +199,13 @@ class ListProblemsTest extends FunSuite with Matchers {
     range(11, 8) shouldBe List(11, 10, 9, 8)
   }
 
+
+  test("23 should return a list of n elements randomly selected from the list") {
+    val random = new Random(101)
+    randomSelect(1, List(), random) shouldBe Nil
+    randomSelect(1, List(5), random) shouldBe List(5)
+    randomSelect(3, List(1, 2, 3, 4, 5, 6, 7), random) shouldBe List(6, 3, 4)
+  }
 
 
 }

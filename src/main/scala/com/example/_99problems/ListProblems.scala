@@ -1,6 +1,7 @@
 package com.example._99problems
 
 import scala.annotation.tailrec
+import scala.util.Random
 
 object ListProblems {
 
@@ -316,6 +317,26 @@ object ListProblems {
     }
     tailRecRange(from, to, Nil)
   }
+
+  def randomSelect[A](n: Int, list: List[A], random: Random): List[A] = {
+    val size = list.length
+    @tailrec def tailRecRandomSelect[A](n: Int, list: List[A], acc: List[A]): List[A] = {
+      if (n > 0) {
+        val nextAcc = at(1 + random.nextInt(size), list) match {
+          case Some(value) => acc ++ List(value)
+          case None => acc
+        }
+        tailRecRandomSelect(n - 1, list, nextAcc)
+      } else acc
+    }
+
+    list match {
+      case _ :: _ if n > 0 => tailRecRandomSelect(n, list, Nil)
+      case _ => Nil
+    }
+
+  }
+
 
 
 }
