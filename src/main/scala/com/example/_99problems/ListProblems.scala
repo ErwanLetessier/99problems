@@ -256,6 +256,23 @@ object ListProblems {
     else tailRecRotate(places, original, Nil, 0)
   }
 
+  def rotateRight[A](places: Int, original: List[A]): List[A] = {
+    @tailrec def tailRecRotate(places: Int, list: List[A], keep: List[A], move: List[A], size: Int): List[A] = {
+      list match {
+        case Nil if places > 0 => tailRecRotate(places % size, original, Nil, Nil, 0)
+        case Nil => move ++ keep
+        case head :: tail if places > 0 => tailRecRotate(places - 1, tail, keep, move ++ List(head), size + 1)
+        case head :: tail if places == 0 => tailRecRotate(places, tail, keep ++ List(move.head), move.tail ++ List(head), size + 1)
+      }
+    }
+    original match {
+      case list@ Nil => list
+      case list@ _:: Nil => list
+      case list@ _ => tailRecRotate(places, list, Nil, Nil, 0)
+    }
+
+  }
+
 
 }
 
