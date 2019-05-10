@@ -200,11 +200,20 @@ class ListProblemsTest extends FunSuite with Matchers {
   }
 
 
+  private def stableRandom: Random = new Random(101)
+
   test("23 should return a list of n elements randomly selected from the list") {
-    val random = new Random(101)
-    randomSelect(1, List(), random) shouldBe Nil
-    randomSelect(1, List(5), random) shouldBe List(5)
-    randomSelect(3, List(1, 2, 3, 4, 5, 6, 7), random) shouldBe List(6, 3, 4)
+    randomSelect(1, List(), stableRandom) shouldBe Nil
+    randomSelect(1, List(5), stableRandom) shouldBe List(5)
+    randomSelect(3, List(1, 2, 3, 4, 5, 6, 7), stableRandom) shouldBe List(2, 6, 3)
+  }
+
+  test("24 should return n unique random elements out of a list of M elements (Lotto)") {
+    lotto(6, List(), stableRandom) shouldBe Nil
+    val lottoNumbers = (1 to 49).toList
+    lotto(1, lottoNumbers, stableRandom) shouldBe List(2)
+    lotto(2, lottoNumbers, stableRandom) shouldBe List(2, 12)
+    lotto(6, lottoNumbers, stableRandom) shouldBe List(2, 12, 10, 40, 29, 13)
   }
 
 

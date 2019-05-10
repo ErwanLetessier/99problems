@@ -337,6 +337,20 @@ object ListProblems {
 
   }
 
+  def lotto[A](n: Int, numbers: List[A], random: Random): List[A] = {
+    @tailrec def tailRecLotto[A](n: Int, numbers: List[A], random: Random, acc: List[A]): List[A] = {
+      numbers match {
+        case Nil => acc
+        case _ =>
+          val r = random.nextInt(numbers.length)
+          at(1 + r, numbers) match {
+            case Some(value) if n > 0 => tailRecLotto(n - 1, removeAt(r, numbers), random, acc ++ List(value))
+            case _ => acc
+          }
+      }
+    }
+    tailRecLotto(n, numbers, random, Nil)
+  }
 
 
 }
