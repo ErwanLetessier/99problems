@@ -46,7 +46,7 @@ object ListProblems {
 
   def reverse[A](list: List[A]): List[A] = {
     @tailrec
-    def tailRecReverse[A](list: List[A], acc: List[A]): List[A] = {
+    def tailRecReverse(list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
         case head :: Nil => head :: acc
@@ -61,7 +61,7 @@ object ListProblems {
   }
 
   def flatten[A](list: List[List[A]]): List[A] = {
-    @tailrec def tailRecFlatten[A](list: List[List[A]], acc: List[A]): List[A] = {
+    @tailrec def tailRecFlatten(list: List[List[A]], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
         case head :: tail => tailRecFlatten(tail, acc ++ head)
@@ -71,7 +71,7 @@ object ListProblems {
   }
 
   def compress[A](list: List[A]): List[A] = {
-    @tailrec def tailRecCompress[A](list: List[A], acc: List[A]): List[A] = {
+    @tailrec def tailRecCompress(list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
         case head :: tail if acc == Nil => tailRecCompress(tail, head :: acc)
@@ -103,7 +103,7 @@ object ListProblems {
   }
 
   private def toEncoded[A](lists: List[List[A]]): List[Encoded[A]] = {
-    @tailrec def tailRecToEncoded[A](lists: List[List[A]], acc: List[Encoded[A]]): List[Encoded[A]] = {
+    @tailrec def tailRecToEncoded(lists: List[List[A]], acc: List[Encoded[A]]): List[Encoded[A]] = {
       lists match {
         case Nil => acc
         case list :: tail => list match {
@@ -121,7 +121,7 @@ object ListProblems {
   }
 
   private def fillList[A](times: Int, value: A): List[A] = {
-    @tailrec def tailRecFillList[A](times: Int, value: A, acc: List[A]): List[A] = {
+    @tailrec def tailRecFillList(times: Int, value: A, acc: List[A]): List[A] = {
       if (times > 0) tailRecFillList(times - 1, value, value :: acc)
       else acc
     }
@@ -136,7 +136,7 @@ object ListProblems {
   }
 
   def decode[A](encoded: List[Encoded[A]]): List[A] = {
-    @tailrec def tailRecDecode[A](encoded: List[Encoded[A]], acc: List[A]): List[A] = {
+    @tailrec def tailRecDecode(encoded: List[Encoded[A]], acc: List[A]): List[A] = {
       encoded match {
         case Nil => acc
         case head :: tail =>  tailRecDecode(tail, acc ++ decoded(head))
@@ -146,7 +146,7 @@ object ListProblems {
   }
 
   def directLengthEncode[A](list: List[A]): List[Encoded[A]] = {
-    @tailrec def tailRecDirectLengthEncode[A](list: List[A], acc: List[Encoded[A]]): List[Encoded[A]] = {
+    @tailrec def tailRecDirectLengthEncode(list: List[A], acc: List[Encoded[A]]): List[Encoded[A]] = {
       list match {
         case Nil => acc
         case value :: tail => tailRecDirectLengthEncode(tail, nextAccValue(acc, value))
@@ -166,7 +166,7 @@ object ListProblems {
   }
 
   def duplicate[A](list: List[A]): List[A] = {
-    @tailrec def tailRecDuplicate[A](list: List[A], acc: List[A]): List[A] = {
+    @tailrec def tailRecDuplicate(list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
         case head :: tail => tailRecDuplicate(tail, acc ++ List(head, head))
@@ -176,7 +176,7 @@ object ListProblems {
   }
 
   def replicate[A](times: Int, list: List[A]): List[A] = {
-    @tailrec def tailRecReplicate[A](list: List[A], acc: List[A]): List[A] = {
+    @tailrec def tailRecReplicate(list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
         case head :: tail => tailRecReplicate(tail, acc ++ fillList(times, head))
@@ -187,7 +187,7 @@ object ListProblems {
 
 
   def drop[A](n: Int, list: List[A]): List[A] = {
-    @tailrec def tailRecDrop[A](n: Int, list: List[A], acc: List[A]): List[A] = {
+    @tailrec def tailRecDrop(n: Int, list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
         case head :: tail if n > 1 => tailRecDrop(n - 1, tail, acc ++ List(head))
@@ -198,7 +198,7 @@ object ListProblems {
   }
 
   def split[A](length: Int, list: List[A]): (List[A], List[A]) = {
-    @tailrec def tailRecSplit[A](length: Int, list: List[A], acc: List[A]): (List[A], List[A]) = {
+    @tailrec def tailRecSplit(length: Int, list: List[A], acc: List[A]): (List[A], List[A]) = {
       list match {
         case Nil => (acc, Nil)
         case head :: tail if length > 1 => tailRecSplit(length - 1, tail, acc ++ List(head))
@@ -209,7 +209,7 @@ object ListProblems {
   }
 
   def slice[A](i: Int, k: Int, list: List[A]): List[A] = {
-    @tailrec def tailRecSlice[A](i: Int, k: Int, list: List[A], acc: List[A]): List[A] = {
+    @tailrec def tailRecSlice(i: Int, k: Int, list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
         case _ :: tail if i > 1 => tailRecSlice(i - 1, k - 1, tail, acc)
@@ -286,7 +286,7 @@ object ListProblems {
   }
 
   def removeAt[A](n: Int, list: List[A]): List[A] = {
-    @tailrec def tailRecRemoveAt[A](n: Int, list: List[A], acc: List[A]): List[A] = {
+    @tailrec def tailRecRemoveAt(n: Int, list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
         case head :: tail if n > 1 => tailRecRemoveAt(n - 1, tail, acc ++ List(head))
@@ -297,7 +297,7 @@ object ListProblems {
   }
 
   def insertAt[A](n: Int, value: A, list: List[A]): List[A] = {
-    @tailrec def tailRecInsertAt[A](n: Int, value: A, list: List[A], acc: List[A]): List[A]= {
+    @tailrec def tailRecInsertAt(n: Int, value: A, list: List[A], acc: List[A]): List[A]= {
       list match {
         case Nil => acc ++ List(value)
         case head :: tail if n > 1 => tailRecInsertAt(n - 1, value, tail, acc ++ List(head))
@@ -320,7 +320,7 @@ object ListProblems {
 
   def randomSelect[A](n: Int, list: List[A], random: Random): List[A] = {
     val size = list.length
-    @tailrec def tailRecRandomSelect[A](n: Int, list: List[A], acc: List[A]): List[A] = {
+    @tailrec def tailRecRandomSelect(n: Int, list: List[A], acc: List[A]): List[A] = {
       if (n > 0) {
         val nextAcc = at(1 + random.nextInt(size), list) match {
           case Some(value) => acc ++ List(value)
@@ -338,18 +338,66 @@ object ListProblems {
   }
 
   def lotto[A](n: Int, numbers: List[A], random: Random): List[A] = {
-    @tailrec def tailRecLotto[A](n: Int, numbers: List[A], random: Random, acc: List[A]): List[A] = {
+    @tailrec def tailRecLotto(n: Int, numbers: List[A], random: Random, acc: List[A]): List[A] = {
       numbers match {
         case Nil => acc
         case _ =>
-          val r = random.nextInt(numbers.length)
-          at(1 + r, numbers) match {
+          val r = 1 + random.nextInt(numbers.length)
+          at(r, numbers) match {
             case Some(value) if n > 0 => tailRecLotto(n - 1, removeAt(r, numbers), random, acc ++ List(value))
             case _ => acc
           }
       }
     }
     tailRecLotto(n, numbers, random, Nil)
+  }
+
+  def permutation[A](list: List[A], random: Random): List[A] = {
+    @tailrec def tailRecPermutation(list: List[A], n: Int, random: Random, acc: List[A]): List[A] = {
+      list match {
+        case Nil => acc
+        case _ if n > 0 =>
+          val r = 1 + random.nextInt(n)
+          at(r, list) match {
+            case Some(value) if n > 0 => tailRecPermutation(removeAt(r, list), n - 1, random, acc ++ List(value))
+            case _ => acc
+          }
+      }
+    }
+    tailRecPermutation(list, list.length, random, Nil)
+  }
+
+
+  def combinations[A](p: Int, list: List[A]): List[List[A]] = {
+    def extractCombinations(p: Int, list: List[A], length: Int): List[List[A]] = {
+      list match {
+        case Nil => Nil
+        case _ :: _ if p == length => List(list)
+        case _ :: _ if p == 0 => List(Nil)
+        case head :: tail => extractCombinations(p - 1, tail, length - 1).map(head :: _) ++ extractCombinations(p, tail, length - 1)
+      }
+    }
+
+    extractCombinations(p, list, list.length)
+  }
+
+  def groups[A](p: Int, list: List[A]): List[List[A]] = {
+    p match {
+      case 0 => Nil
+      case _ => groups(p - 1, list) ++ combinations(p, list)
+    }
+  }
+
+  def specifiedGroups[A](groupSizes: List[Int], list: List[A]): List[List[A]] = {
+
+    @tailrec def doSpecifiedGroups(groupSizes: List[Int], list: List[A], acc: List[List[A]] = Nil): List[List[A]] = {
+      groupSizes match {
+        case Nil => acc
+        case 0 :: _ => acc
+        case p :: moreSizes => doSpecifiedGroups(moreSizes, list, acc ++ combinations(p, list))
+      }
+    }
+    doSpecifiedGroups(groupSizes.sorted.reverse, list)
   }
 
 

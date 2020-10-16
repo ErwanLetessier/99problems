@@ -216,6 +216,37 @@ class ListProblemsTest extends FunSuite with Matchers {
     lotto(6, lottoNumbers, stableRandom) shouldBe List(2, 12, 10, 40, 29, 13)
   }
 
+  test("25 should return random permutations of elements of input list") {
+    permutation(List(), stableRandom) shouldBe Nil
+    permutation(List(4), stableRandom) shouldBe List(4)
+    permutation(List(5, 9), stableRandom) shouldBe List(9, 5)
+    permutation(List(1, 2, 3, 4, 5, 6), stableRandom) shouldBe List(5, 1, 3, 4, 2, 6)
+  }
+
+  test("26 should return combination C(n,p) of p elements out of a list of n elements") {
+    combinations(2, List()) should contain theSameElementsAs List()
+    combinations(1, List(5)) should contain theSameElementsAs  List(List(5))
+    combinations(1, List(5, 6)) should contain theSameElementsAs List(List(5), List(6))
+    combinations(2, List(5, 6, 7)) should contain theSameElementsAs List(List(5, 6), List(5, 7), List(6, 7))
+  }
+
+  test ("27 should return combination C(n,p) for all x from 1 to p") {
+    groups(2, List()) should contain theSameElementsAs List()
+    groups(1, List(5)) should contain theSameElementsAs List(List(5))
+    groups(1, List(5, 6)) should contain theSameElementsAs List(List(5), List(6))
+    groups(2, List(5, 6)) should contain theSameElementsAs List(List(5), List(6), List(5, 6))
+    groups(2, List(5, 6, 7)) should contain theSameElementsAs List(List(5), List(6), List(7), List(5, 6), List(5, 7), List(6, 7))
+    groups(3, List(5, 6, 7)) should contain theSameElementsAs List(List(5), List(6), List(7), List(5, 6), List(5, 7), List(6, 7), List(5, 6, 7))
+  }
+
+  test ("27 bis should return combination C(n,p) for all x < n in a list of Ps (generalization)") {
+    specifiedGroups(List(2), List()) should contain theSameElementsAs List()
+    specifiedGroups(List(1), List(5)) should contain theSameElementsAs List(List(5))
+    specifiedGroups(List(1), List(5, 6)) should contain theSameElementsAs List(List(5), List(6))
+    specifiedGroups(List(2), List(5, 6)) should contain theSameElementsAs List(List(5, 6))
+    specifiedGroups(List(2), List(5, 6, 7)) should contain theSameElementsAs List(List(5, 6), List(5, 7), List(6, 7))
+    specifiedGroups(List(3), List(5, 6, 7)) should contain theSameElementsAs List(List(5, 6, 7))
+    specifiedGroups(List(1, 3), List(5, 6, 7)) should contain theSameElementsAs List(List(5), List(6), List(7), List(5, 6, 7))
+  }
 
 }
-
