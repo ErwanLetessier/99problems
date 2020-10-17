@@ -79,4 +79,31 @@ class ArithmeticProblemsTest extends FunSuite with Matchers {
     eulerTotient(10) shouldEqual 4
     eulerTotient(13) shouldEqual 12
   }
+
+  test("36 should return prime factors cardinality") {
+    primeFactorsCardinality(315) shouldEqual List((3,2), (5,1), (7,1))
+  }
+
+  test("37 should return euler's totient using cardinality") {
+    cardinalEulerTotient(10) shouldEqual 4
+    cardinalEulerTotient(13) shouldEqual 12
+  }
+
+  def time[R](block: => R): R = {
+    val t0 = System.nanoTime()
+    val result = block    // call-by-name
+    val t1 = System.nanoTime()
+    println("Elapsed time: " + (t1 - t0) + "ns")
+    result
+  }
+
+  test(" time both euler's totient") {
+    time(cardinalEulerTotient(10090))
+    //time(eulerTotient(10090))
+    /* obviously applying math formula is much more efficient than iterative brute force */
+  }
+
+  test("39 should return all primes between a and b") {
+    allPrimes(2, 7920) should have size 1000
+  }
 }

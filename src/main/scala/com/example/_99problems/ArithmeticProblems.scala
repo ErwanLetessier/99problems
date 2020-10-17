@@ -1,5 +1,7 @@
 package com.example._99problems
 
+import scala.annotation.tailrec
+
 
 object ArithmeticProblems {
 
@@ -11,7 +13,7 @@ object ArithmeticProblems {
 
   def primeFactors(n: Int): List[Int] = {
     val primes = primesUntil(n).toList
-    def findPrimeFactors(n: Int, acc: List[Int] = Nil): List[Int] = {
+    @tailrec def findPrimeFactors(n: Int, acc: List[Int] = Nil): List[Int] = {
       if (n < 2) acc
       else {
         primes.find(n % _ == 0) match {
@@ -43,6 +45,26 @@ object ArithmeticProblems {
     (1 until m).count(m.coprime)
   }
 
+  def primeFactorsCardinality(m: Int): List[(Int, Int)] = {
+    (
+      primeFactors _
+        andThen ListProblems.pack
+      )(m)
+      .map(e => (e.head, e.length)
+    )
+  }
+
+  def cardinalEulerTotient(m: Int): Int = {
+    primeFactorsCardinality(m)
+      .map { case (prime, multiplicity) => (prime - 1) * math.pow(prime, multiplicity -1).toInt }
+      .product
+  }
+
+  def allPrimes(low: Int, high: Int): Stream[Int] = {
+    Stream.from(low)
+      .filter(isPrime)
+      .takeWhile(_ <= high)
+  }
 
 
 }
