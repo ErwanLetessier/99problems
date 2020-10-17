@@ -29,6 +29,20 @@ object ArithmeticProblems {
     (aFactors intersect bFactors).product
   }
 
+  def coprime(a: Int, b: Int): Boolean = {
+    gcd(a, b) == 1
+  }
+
+  implicit class IntExtension(i: Int) {
+    def coprime(j: Int): Boolean = {
+      ArithmeticProblems.coprime(i, j)
+    }
+  }
+
+  def eulerTotient(m: Int): Int = {
+    (1 until m).count(m.coprime)
+  }
+
 
 
 }

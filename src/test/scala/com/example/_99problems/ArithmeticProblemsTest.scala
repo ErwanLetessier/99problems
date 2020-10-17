@@ -9,11 +9,11 @@ import ArithmeticProblems._
 class ArithmeticProblemsTest extends FunSuite with Matchers {
 
   def assertIsPrime(n: Int): Unit = {
-    assertPrime(n, true)
+    assertPrime(n, expected = true)
   }
 
   def assertIsNotPrime(n: Int): Unit = {
-    assertPrime(n, false)
+    assertPrime(n, expected = false)
   }
 
   def assertPrime(n: Int, expected: Boolean): Unit = {
@@ -39,7 +39,7 @@ class ArithmeticProblemsTest extends FunSuite with Matchers {
     withClue(s"PrimeFactors($n)") { primeFactors(n) shouldEqual expected }
   }
 
-  test("should return prime factors of n") {
+  test("35 should return prime factors of n") {
     assertPrimeFactors(1, Nil)
     assertPrimeFactors(2, List(2))
     assertPrimeFactors(3, List(3))
@@ -58,4 +58,25 @@ class ArithmeticProblemsTest extends FunSuite with Matchers {
     gcd(240, 90) shouldEqual 30
   }
 
+  def assertAreCoprime(a: Int, b: Int) = {
+    assertCoprime(a, b, expected = true)
+  }
+
+  def assertAreNotCoprime(a: Int, b: Int) = {
+    assertCoprime(a, b, expected = false)
+  }
+
+  def assertCoprime(a: Int, b: Int, expected: Boolean) = {
+    withClue(s"coprime($a, $b)") { coprime(a, b) shouldBe expected }
+  }
+
+  test("33 should return whether a anb are co-prime or not") {
+    assertAreCoprime(13, 27)
+    assertAreNotCoprime(20536, 7826)
+  }
+
+  test ("34 should return euler totient: number of integer with 1 <=n < m and n coprime m") {
+    eulerTotient(10) shouldEqual 4
+    eulerTotient(13) shouldEqual 12
+  }
 }
