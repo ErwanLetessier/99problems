@@ -1,11 +1,8 @@
 package com.example._99problems
 
 import com.example._99problems.implicits._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FlatSpec, Matchers}
 
-@RunWith(classOf[JUnitRunner])
 class TruckTest extends FlatSpec with Matchers {
 
   import Truck._
