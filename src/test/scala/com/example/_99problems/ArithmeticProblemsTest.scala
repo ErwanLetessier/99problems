@@ -106,4 +106,22 @@ class ArithmeticProblemsTest extends FunSuite with Matchers {
   test("39 should return all primes between a and b") {
     allPrimes(2, 7920) should have size 1000
   }
+
+  test("40 should return goldbach composition N: N even and N > 2 is the sum of 2 prime") {
+    GoldbachLimit.goldbach(27) shouldEqual None
+    GoldbachLimit.goldbach(28) shouldEqual Some((5, 23))
+    GoldbachLimit.goldbach(100) shouldEqual Some((3, 97))
+  }
+
+  test ("41 should return N with its goldbach composition") {
+    GoldbachLimit.goldbachComposition(10) shouldEqual Some((10, (3,7)))
+  }
+
+  test("goldbach list") {
+    GoldbachLimit(20, 9).goldbachList shouldEqual List((10, (3, 7)), (12, (5, 7)), (14, (3, 11)), (16, (3, 13)), (18, (5, 13)), (20, (3, 17)))
+  }
+
+  test("goldbach limit") {
+    GoldbachLimit(2000, limit = 50).goldbachLimit shouldEqual List((992, (73, 919)), (1382, (61, 1321)), (1856, (67, 1789)), (1928, (61, 1867)))
+  }
 }

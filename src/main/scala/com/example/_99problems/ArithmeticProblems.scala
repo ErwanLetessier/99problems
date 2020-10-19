@@ -66,5 +66,44 @@ object ArithmeticProblems {
       .takeWhile(_ <= high)
   }
 
+  object GoldbachLimit {
+    def goldbach(n: Int): Option[(Int, Int)] = {
+      GoldbachLimit(n).goldbach(n)
+    }
+    def goldbachComposition(n: Int): Option[(Int, (Int, Int))] = {
+      GoldbachLimit(n).goldbachComposition(n)
+    }
+  }
+
+  case class GoldbachLimit(high: Int, low: Int = 2, limit: Int = 0) {
+
+    val primes = allPrimes(2, high).toList
+    val reversePrimes = primes.reverse
+
+    def goldbach(n: Int): Option[(Int, Int)] = {
+      if (n%2 == 0) {
+        primes
+          .find(p => reversePrimes.contains(n-p))
+          .map(p => (p, n-p))
+      } else None
+    }
+
+    def goldbachComposition(n: Int): Option[(Int, (Int, Int))] = {
+      goldbach(n).map((n, _))
+    }
+
+    def goldbachList: List[(Int, (Int, Int))] = {
+      (low to high)
+        .filter(_%2 == 0)
+        .flatMap(goldbachComposition)
+        .toList
+    }
+
+    def goldbachLimit: List[(Int, (Int, Int))] = {
+      goldbachList
+        .filter{case(_, (p1, _)) => p1 > limit }
+    }
+  }
+
 
 }
