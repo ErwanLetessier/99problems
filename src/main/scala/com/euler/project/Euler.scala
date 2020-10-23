@@ -24,7 +24,7 @@ object Euler {
   }
 
 
-  def primesUntil(n: Long): Stream[Long] = Stream.from(2).filter(isPrime).takeWhile(_<= n).map(_.toLong)
+  def primesUntil(n: Long): Stream[Long] = Stream.from(2).filter(isPrime).takeWhile(_< n).map(_.toLong)
 
   def primeFactors(n: Long): List[Long] = {
     val primes = primesUntil(n.toLong).toList
@@ -104,15 +104,89 @@ object Euler {
     Option(math.sqrt(square(a) + square(b))).collect{ case c if c.isValidInt => c.toInt}
   }
 
-  def pythagoreanTriplet(targetSum: Int): Option[Array[Int]] = {
+  implicit class RichInt(i: Int) {
+    def **(p: Int): Int = { math.pow(i, p).toInt}
+  }
+
+  def pythagoreanTriplet(targetSum: Int): Option[Vector[Int]] = {
     (
       for {
-        a <- 1 until targetSum
-        b <- a to targetSum - a
-      } yield (a, b)
-    )
-    .flatMap { case (a, b) => intHypothenus(a, b).map(c => Array(a, b, c))}
-    .find(_.sum == targetSum)
+        aa <- Stream.from(1).takeWhile(_< targetSum)
+        arr <- Stream.from(aa)
+          .map(b => (aa, b, targetSum - aa - b))
+          .dropWhile{ case (a, b, c) => a + b < c }
+          .takeWhile{ case (_, b, c) => b < c }
+          .filter{ case (a,b,c) => a+b+c == targetSum && a**2+b**2 == c**2 }
+          .map{ case (a,b,c) => Vector(a, b,c) }
+      } yield arr
+    ).headOption
   }
+
+
+  def groups(terms: Int)(series: Vector[Int]): Vector[Vector[Int]] = {
+      (0 to series.length - terms)
+        .toVector
+        .map(startIndex => series.slice(startIndex, startIndex + terms))
+  }
+
+  def transpose(grid: Vector[Vector[Int]]): Vector[Vector[Int]] = {
+    grid.head.indices.toVector.map {
+      col => grid.indices.toVector.map {
+        row => grid(row)(col)
+      }
+    }
+  }
+
+  case class Point(x: Int, y: Int)
+
+  def incrementedDiagonal(xss: Vector[Vector[Int]], start: Point): Vector[Int] = {
+    @tailrec def inner(p: Point, acc: List[Int]): List[Int] = {
+      p match {
+        case Point(i, j) if j >= xss.length -start.y || i >= xss.length -start.x  => acc
+        case Point(i, j) => inner(Point(i+1, j+1), acc :+ xss(j+start.y)(i+start.x))
+      }
+    }
+    inner(Point(0,0), Nil).toVector
+  }
+
+
+  def decrementedYDiagonal(xss: Vector[Vector[Int]], start: Point): Vector[Int] = {
+    @tailrec def inner(p: Point, acc: List[Int]): List[Int] = {
+      p match {
+        case Point(i, j) if start.y + j < 0 || i >= xss.length - start.x  => acc
+        case Point(i, j) => inner(Point(i+1, j-1), acc :+ xss(j+start.y)(i+start.x))
+      }
+    }
+    inner(Point(0, 0), Nil).toVector
+  }
+
+  def allIncDiag(grid: Vector[Vector[Int]]): Vector[Vector[Int]] = {
+    Vector(
+      grid.indices.reverse.init.map{ j => incrementedDiagonal(grid, Point(0, j)) },
+      grid.indices.map { i => incrementedDiagonal(grid, Point(i, 0)) }
+    ).flatten
+  }
+
+  def allDecDiag(grid: Vector[Vector[Int]]): Vector[Vector[Int]] = {
+    Vector(
+      grid.indices.map { j => decrementedYDiagonal(grid, Point(0, j)) },
+      grid.indices.tail.map { i => decrementedYDiagonal(grid, Point(i, grid.length - 1))}
+    ).flatten
+  }
+
+  def productInGrid(grid: Vector[Vector[Int]], terms: Int) = {
+    Vector(
+      grid,
+      transpose(grid),
+      allIncDiag(grid),
+      allDecDiag(grid)
+    ).flatten
+      .filter(_.length >= terms)
+      .flatMap(groups(terms))
+      .map(v => (v, v.product))
+      .maxBy{case(v, p) => p }
+  }
+
+
 
 }
