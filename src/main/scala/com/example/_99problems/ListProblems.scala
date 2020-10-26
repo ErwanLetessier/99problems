@@ -108,8 +108,8 @@ object ListProblems {
         case Nil => acc
         case list :: tail => list match {
           case Nil => acc
-          case head :: Nil => tailRecToEncoded(tail, acc ++ List(One(head)))
-          case head :: _ => tailRecToEncoded(tail, acc ++ List(Many(list.length, head)))
+          case head :: Nil => tailRecToEncoded(tail, acc :+ One(head))
+          case head :: _ => tailRecToEncoded(tail, acc :+ Many(list.length, head))
         }
       }
     }
@@ -190,7 +190,7 @@ object ListProblems {
     @tailrec def tailRecDrop(n: Int, list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
-        case head :: tail if n > 1 => tailRecDrop(n - 1, tail, acc ++ List(head))
+        case head :: tail if n > 1 => tailRecDrop(n - 1, tail, acc :+ head)
         case _ :: tail => acc ++ tail
       }
     }
@@ -201,8 +201,8 @@ object ListProblems {
     @tailrec def tailRecSplit(length: Int, list: List[A], acc: List[A]): (List[A], List[A]) = {
       list match {
         case Nil => (acc, Nil)
-        case head :: tail if length > 1 => tailRecSplit(length - 1, tail, acc ++ List(head))
-        case head :: tail => (acc ++ List(head), tail)
+        case head :: tail if length > 1 => tailRecSplit(length - 1, tail, acc :+ head)
+        case head :: tail => (acc :+ head, tail)
       }
     }
     tailRecSplit(length, list, Nil)
@@ -213,8 +213,8 @@ object ListProblems {
       list match {
         case Nil => acc
         case _ :: tail if i > 1 => tailRecSlice(i - 1, k - 1, tail, acc)
-        case head :: tail if k > 1 => tailRecSlice(i, k - 1, tail, acc ++ List(head))
-        case head :: _ if i == k => acc ++ List(head)
+        case head :: tail if k > 1 => tailRecSlice(i, k - 1, tail, acc :+ head)
+        case head :: _ if i == k => acc :+ head
       }
     }
     tailRecSlice(i, k, list, Nil)
@@ -224,7 +224,7 @@ object ListProblems {
     @tailrec def tailRecLeft(n: Int, list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
-        case head :: tail if n > 0 => tailRecLeft(n - 1, tail, acc ++ List(head))
+        case head :: tail if n > 0 => tailRecLeft(n - 1, tail, acc :+ head)
         case _ :: _ => acc
       }
     }
@@ -235,8 +235,8 @@ object ListProblems {
     @tailrec def tailRecRight(n: Int, list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
-        case head :: tail if n > 0 => tailRecRight(n - 1, tail, acc ++ List(head))
-        case head :: tail if n == 0 => tailRecRight(n, tail, acc.tail ++ List(head))
+        case head :: tail if n > 0 => tailRecRight(n - 1, tail, acc :+ head)
+        case head :: tail if n == 0 => tailRecRight(n, tail, acc.tail :+ head)
       }
     }
     tailRecRight(n, list, Nil)
@@ -248,7 +248,7 @@ object ListProblems {
         /* limits the number of full rotation > 1 and < 2 */
         case Nil if places > 0 => tailRecRotate(places % size, original, Nil, 0)
         case Nil => acc
-        case head :: tail if places > 0 => tailRecRotate(places - 1, tail, acc ++ List(head), size + 1)
+        case head :: tail if places > 0 => tailRecRotate(places - 1, tail, acc :+ head, size + 1)
         case _ => list ++ acc
       }
     }
@@ -269,8 +269,8 @@ object ListProblems {
       list match {
         case Nil if places > 0 => tailRecRotate(places % size, original, Nil, Nil, 0)
         case Nil => move ++ keep
-        case head :: tail if places > 0 => tailRecRotate(places - 1, tail, keep, move ++ List(head), size + 1)
-        case head :: tail if places == 0 => tailRecRotate(places, tail, keep ++ List(move.head), move.tail ++ List(head), size + 1)
+        case head :: tail if places > 0 => tailRecRotate(places - 1, tail, keep, move :+ head, size + 1)
+        case head :: tail if places == 0 => tailRecRotate(places, tail, keep :+ move.head, move.tail :+ head, size + 1)
       }
     }
     original match {
@@ -289,7 +289,7 @@ object ListProblems {
     @tailrec def tailRecRemoveAt(n: Int, list: List[A], acc: List[A]): List[A] = {
       list match {
         case Nil => acc
-        case head :: tail if n > 1 => tailRecRemoveAt(n - 1, tail, acc ++ List(head))
+        case head :: tail if n > 1 => tailRecRemoveAt(n - 1, tail, acc :+ head)
         case _ :: tail => acc ++ tail
       }
     }
@@ -299,9 +299,9 @@ object ListProblems {
   def insertAt[A](n: Int, value: A, list: List[A]): List[A] = {
     @tailrec def tailRecInsertAt(n: Int, value: A, list: List[A], acc: List[A]): List[A]= {
       list match {
-        case Nil => acc ++ List(value)
-        case head :: tail if n > 1 => tailRecInsertAt(n - 1, value, tail, acc ++ List(head))
-        case _ :: _ => acc ++ List(value) ++ list
+        case Nil => acc :+ value
+        case head :: tail if n > 1 => tailRecInsertAt(n - 1, value, tail, acc :+ head)
+        case _ :: _ => (acc :+ value) ++ list
       }
     }
     tailRecInsertAt(n, value, list, Nil)
@@ -310,9 +310,9 @@ object ListProblems {
   def range(from: Int, to: Int): List[Int] = {
     @tailrec def tailRecRange(from: Int, to: Int, acc: List[Int]): List[Int] = {
       from match {
-        case _ if from < to => tailRecRange(from + 1, to, acc ++ List(from))
-        case _ if from > to => tailRecRange(from - 1, to, acc ++ List(from))
-        case _ => acc ++ List(from)
+        case _ if from < to => tailRecRange(from + 1, to, acc :+ from)
+        case _ if from > to => tailRecRange(from - 1, to, acc :+ from)
+        case _ => acc :+ from
       }
     }
     tailRecRange(from, to, Nil)
@@ -323,7 +323,7 @@ object ListProblems {
     @tailrec def tailRecRandomSelect(n: Int, list: List[A], acc: List[A]): List[A] = {
       if (n > 0) {
         val nextAcc = at(1 + random.nextInt(size), list) match {
-          case Some(value) => acc ++ List(value)
+          case Some(value) => acc :+ value
           case None => acc
         }
         tailRecRandomSelect(n - 1, list, nextAcc)
@@ -344,7 +344,7 @@ object ListProblems {
         case _ =>
           val r = 1 + random.nextInt(numbers.length)
           at(r, numbers) match {
-            case Some(value) if n > 0 => tailRecLotto(n - 1, removeAt(r, numbers), random, acc ++ List(value))
+            case Some(value) if n > 0 => tailRecLotto(n - 1, removeAt(r, numbers), random, acc :+ value)
             case _ => acc
           }
       }
@@ -359,7 +359,7 @@ object ListProblems {
         case _ if n > 0 =>
           val r = 1 + random.nextInt(n)
           at(r, list) match {
-            case Some(value) if n > 0 => tailRecPermutation(removeAt(r, list), n - 1, random, acc ++ List(value))
+            case Some(value) if n > 0 => tailRecPermutation(removeAt(r, list), n - 1, random, acc :+ value)
             case _ => acc
           }
       }
