@@ -1,9 +1,9 @@
 package com.euler.project
 
-import com.example._99problems.ArithmeticProblems
 import com.example._99problems.ArithmeticProblems.{PrimeFactorContext, isPrime}
 
 import scala.annotation.tailrec
+import scala.collection.mutable
 
 
 object Euler {
@@ -70,7 +70,7 @@ object Euler {
       .product
   }
 
-  def sum(seq: Seq[Int]) = {
+  def sum(seq: Seq[Int]): Int = {
     seq.sum
   }
 
@@ -175,7 +175,7 @@ object Euler {
     ).flatten
   }
 
-  def productInGrid(grid: Vector[Vector[Int]], terms: Int) = {
+  def productInGrid(grid: Vector[Vector[Int]], terms: Int): (Vector[Int], Int) = {
     Vector(
       grid,
       transpose(grid),
@@ -198,11 +198,33 @@ object Euler {
     Stream.from(1)
       .map(triangularNumber)
       .map(t => (t, pfc.divisorCount(t)))
-      .dropWhile{ case (t, d) => d < minDivisorCount }
+      .dropWhile{ case (_, d) => d < minDivisorCount }
       .take(1)
       .head._1
   }
 
+  @tailrec def sumBigInts(bigInts: Vector[String]): String = {
+    val intMatrix = bigInts
+      .map(_.toCharArray.map(_.toString.toInt).toVector.reverse)
 
+    intMatrix.head.indices.toVector
+      .map { i => intMatrix.flatMap(_.lift(i)).sum }
 
+    match {
+      case sums if sums.forall(_ <= 9) => sums.reverse.mkString
+      case sums => sumBigInts(intermediateSum(sums))
+    }
+  }
+
+  private def intermediateSum(sums: Vector[Int]): Vector[String] = {
+    val bufferSize = sums.indices.map(i => sums(i).toString.length + i).max
+    sums
+      .map(_.toString.toCharArray.map(_.toString.toInt).toVector.reverse)
+      .zipWithIndex
+      .map { case (vectorOfInt, position) =>
+        val buffer = mutable.ArrayBuffer.fill(bufferSize)(0)
+        vectorOfInt.indices.foreach(idx => buffer.update(idx + position, vectorOfInt(idx)))
+        buffer.toVector.reverse.mkString
+      }
+  }
 }
