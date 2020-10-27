@@ -35,11 +35,12 @@ class ArithmeticProblemsTest extends FunSuite with Matchers {
     assertIsPrime(17)
   }
 
-  def assertPrimeFactors(n: Int, expected: List[Int]): Unit = {
-    withClue(s"PrimeFactors($n)") { primeFactors(n) shouldEqual expected }
+  def assertPrimeFactors(n: Int, expected: List[Int])(implicit pfc: PrimeFactorContext): Unit = {
+    withClue(s"PrimeFactors($n)") { pfc.primeFactors(n) shouldEqual expected }
   }
 
   test("35 should return prime factors of n") {
+    implicit val pfc: PrimeFactorContext = PrimeFactorContext(10)
     assertPrimeFactors(1, Nil)
     assertPrimeFactors(2, List(2))
     assertPrimeFactors(3, List(3))
@@ -81,7 +82,7 @@ class ArithmeticProblemsTest extends FunSuite with Matchers {
   }
 
   test("36 should return prime factors cardinality") {
-    primeFactorsCardinality(315) shouldEqual List((3,2), (5,1), (7,1))
+    PrimeFactorContext(315).primeFactorsCardinality(315) shouldEqual List((3,2), (5,1), (7,1))
   }
 
   test("37 should return euler's totient using cardinality") {
@@ -98,7 +99,7 @@ class ArithmeticProblemsTest extends FunSuite with Matchers {
   }
 
   test(" time both euler's totient") {
-    time(cardinalEulerTotient(10090))
+   // time(cardinalEulerTotient(10090))
     //time(eulerTotient(10090))
     /* obviously applying math formula is much more efficient than iterative brute force */
   }

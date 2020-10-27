@@ -1,7 +1,7 @@
 package com.euler.project
 
 import com.example._99problems.ArithmeticProblems
-import com.example._99problems.ArithmeticProblems.isPrime
+import com.example._99problems.ArithmeticProblems.{PrimeFactorContext, isPrime}
 
 import scala.annotation.tailrec
 
@@ -60,9 +60,10 @@ object Euler {
   }
 
   def smallestMultiple(a: Int, b: Int): Int = {
+    val pfc = PrimeFactorContext(b)
     (a to b)
       .filter(_ > 1)
-      .flatMap(ArithmeticProblems.primeFactorsCardinality)
+      .flatMap(pfc.primeFactorsCardinality)
       .groupBy{ case (prime, _) => prime }
       .map{ case (prime, l) => (prime, l.map{case(_, c) => c}.max) }
       .map { case (prime, multiplicity) => math.pow(prime, multiplicity).toInt }
@@ -184,7 +185,22 @@ object Euler {
       .filter(_.length >= terms)
       .flatMap(groups(terms))
       .map(v => (v, v.product))
-      .maxBy{case(v, p) => p }
+      .maxBy{case(_, p) => p }
+  }
+
+
+
+  def triangularNumber(n: Int): Int = {
+    n * (n + 1) / 2
+  }
+
+  def highlyDivisibleTriangular(minDivisorCount: Int)(implicit pfc: PrimeFactorContext): Long = {
+    Stream.from(1)
+      .map(triangularNumber)
+      .map(t => (t, pfc.divisorCount(t)))
+      .dropWhile{ case (t, d) => d < minDivisorCount }
+      .take(1)
+      .head._1
   }
 
 

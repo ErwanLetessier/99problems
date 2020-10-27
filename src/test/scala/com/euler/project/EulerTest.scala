@@ -5,6 +5,7 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSuite, Matchers}
 import Euler._
+import com.example._99problems.ArithmeticProblems.PrimeFactorContext
 import org.scalatest.Inside.inside
 
 @RunWith(classOf[JUnitRunner])
@@ -112,8 +113,13 @@ class EulerTest extends FunSuite with Matchers {
   }
 
   test("11 largest product in a grid") {
-
     productInGrid(IntGrid, 4) shouldEqual (Vector(87, 97, 94, 89),70600674)
+  }
+
+  test("12 Highly divisible triangular number") {
+    triangularNumber(7) shouldEqual 28
+    implicit lazy val pfc: PrimeFactorContext = PrimeFactorContext(80000000)
+    //highlyDivisibleTriangular(500) shouldEqual 76576500
   }
 
 }
