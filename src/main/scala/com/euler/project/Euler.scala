@@ -3,7 +3,8 @@ package com.euler.project
 import com.example._99problems.ArithmeticProblems.{PrimeFactorContext, isPrime}
 
 import scala.annotation.tailrec
-import scala.collection.mutable
+import scala.collection.{immutable, mutable}
+import scala.io.Source
 
 
 object Euler {
@@ -363,6 +364,46 @@ object Euler {
       .scanLeft(1){(acc, curr) => (acc + curr) % 7 }
       .slice(12, 1212)
       .count(_ == 0)
+  }
+
+  @tailrec def factorial(n: BigInt, acc: BigInt = 1): BigInt = {
+    if (n < 2) acc else factorial(n - 1, acc * n)
+  }
+
+  def factorialDigitSum(n: BigInt): Int = {
+    factorial(n).toString.map(_.asDigit).sum
+  }
+
+  def properDivisorSum(n: Int): Int = {
+    val (limit: Int, step: Int) = if (n % 2 == 0) (n / 2, 1) else (math.sqrt(n).toInt, 2)
+    (1 to limit by step)
+      .collect { case i if n%i == 0 => i }
+      .sum
+  }
+
+  def properDivisorSums(till: Int): IndexedSeq[Int] = {
+    (0 to till).map(properDivisorSum)
+  }
+
+  def amicableNumbers(till: Int): IndexedSeq[(Int, Int)] = {
+    val sums = (0 to till).zip(properDivisorSums(till))
+    sums.filter{case (i, s) => i!=s && sums.lift(s).map(_._2).contains(i) }
+  }
+
+  def amicableNumbersSum(till: Int): Int = {
+    amicableNumbers(till).map(_._2).sum
+  }
+
+  def namesScoresSum: Int = {
+    Source
+      .fromInputStream(getClass.getClassLoader.getResourceAsStream("p022_names.txt"))
+      .getLines.toList.head.split(",")
+      .map(n => n.slice(1, n.length-1))
+      .sorted
+      .map(_.toCharArray.map(_-64).sum)
+      .zipWithIndex
+      .map{case (v, i) => v *(i+1)}
+      .sum
   }
 
 }

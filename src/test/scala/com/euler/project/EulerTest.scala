@@ -338,4 +338,20 @@ class EulerTest extends FunSuite with Matchers {
     countingSundays shouldEqual 171
   }
 
+  test("20 factorial digits sum") {
+    factorialDigitSum(10) shouldEqual 27
+    factorialDigitSum(100) shouldEqual 648
+  }
+
+  test("21 amicable numbers") {
+    properDivisorSum(220) shouldEqual 284
+    properDivisorSum(284) shouldEqual 220
+
+    amicableNumbersSum(10000) shouldEqual 31626
+  }
+
+  test("22 names score") {
+    namesScoresSum shouldEqual 871198282
+  }
+
 }
