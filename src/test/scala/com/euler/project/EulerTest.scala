@@ -334,4 +334,8 @@ class EulerTest extends FunSuite with Matchers {
     maximumPathSumString(Triangle15) shouldEqual 1074
   }
 
+  test ("19 counting 20th century sundays falling on 1st day of the month") {
+    countingSundays shouldEqual 171
+  }
+
 }

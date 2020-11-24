@@ -347,4 +347,22 @@ object Euler {
   }
 
 
+  val MonthLengths = Vector(31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+  def isLeapYear(y: Int): Boolean = {
+    if (y % 100 == 0) (y / 100) % 4 == 0
+    else y % 4 == 0
+  }
+
+  def countingSundays: Int = {
+    val allMonthsLengths = for {
+      y <- 1900 to 2000
+      m <- 1 to 12
+    } yield if (m == 2) if (isLeapYear(y)) 29 else 28 else MonthLengths(m - 1)
+
+    allMonthsLengths
+      .scanLeft(1){(acc, curr) => (acc + curr) % 7 }
+      .slice(12, 1212)
+      .count(_ == 0)
+  }
+
 }
