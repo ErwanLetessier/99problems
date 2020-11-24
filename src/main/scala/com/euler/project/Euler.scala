@@ -1,6 +1,5 @@
 package com.euler.project
 
-import com.euler.project.Euler.{Under20, toLetterCount}
 import com.example._99problems.ArithmeticProblems.{PrimeFactorContext, isPrime}
 
 import scala.annotation.tailrec
@@ -303,7 +302,7 @@ object Euler {
   }
 
 
-  def toLetterCount(acc: Int = 0)(i: Int): Int = {
+  @tailrec def toLetterCount(acc: Int = 0)(i: Int): Int = {
     if (i >= 1000) {
       Div.of(i, 1000) match {
         case Div(q, 0) => acc + Under20(q) + Thousand
@@ -326,5 +325,26 @@ object Euler {
   def numberLetterCount(from: Int, to: Int): Int = {
     (from to to).map(toLetterCount()).sum
   }
+
+  def maximumPathSumString(triangle: Vector[String]): Int = {
+    maximumPathSum(triangle.map(_.split(" ").toVector.map(_.toInt)))
+  }
+
+  private def maximumPathSum(triangle: Vector[Vector[Int]]): Int = {
+    maximumPathSum(triangle.init, triangle.last)
+  }
+
+  @tailrec private def maximumPathSum(triangle: Vector[Vector[Int]], bottom: Vector[Int]): Int = {
+    if (bottom.length == 1) bottom.head
+    else {
+      val updatedBottom = bottom
+        .zip(bottom.tail)
+        .map { case (a, b) => math.max(a, b) }
+        .zip(triangle.last)
+        .map { case (a, b) => a + b }
+      maximumPathSum(triangle.init, updatedBottom)
+    }
+  }
+
 
 }
