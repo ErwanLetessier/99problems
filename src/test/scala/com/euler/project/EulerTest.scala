@@ -243,4 +243,59 @@ class EulerTest extends FunSuite with Matchers {
     sumBigInts(largeIntString).substring(0,10) shouldEqual "5537376230"
   }
 
+  test("14 Longest Collatz sequence") {
+    val collatzContext = CollatzContext()
+    collatzContext.collatzLength(1 ) shouldEqual 0
+    collatzContext.collatzLength(2) shouldEqual 1
+    collatzContext.collatzLength(4) shouldEqual 2
+    collatzContext.collatzLength(8) shouldEqual 3
+    collatzContext.collatzLength(16) shouldEqual 4
+    collatzContext.collatzLength(5) shouldEqual 5
+    collatzContext.collatzLength(10) shouldEqual 6
+    collatzContext.collatzLength(20) shouldEqual 7
+    collatzContext.collatzLength(40) shouldEqual 8
+    collatzContext.collatzLength(13) shouldEqual 9
+    collatzContext.collatzLength(1000000) shouldEqual 152
+   // collatzContext.longestCollatzChain(1000000) shouldEqual 837799
+  }
+
+  test("16 power digits sum") {
+    powerDigitSum(2, 15) shouldEqual 26
+    powerDigitSum(2, 1000) shouldEqual 1366
+  }
+
+  private def assertNumberLetterCounts(from: Int, to: Int, expected: Int): Unit = {
+    numberLetterCount(from, to) shouldEqual expected
+  }
+
+  private def assertNumberLetterCount(from: Int, expected: Int): Unit = {
+    assertNumberLetterCounts(from, from, expected)
+  }
+
+  test("17 number letter counts") {
+    assertNumberLetterCount(1, 3)
+    assertNumberLetterCount(2, 3)
+    assertNumberLetterCount(3, 5)
+    assertNumberLetterCount(4, 4)
+    assertNumberLetterCount(5, 4)
+    assertNumberLetterCount(6, 3)
+    assertNumberLetterCount(7, 5)
+    assertNumberLetterCount(8, 5)
+    assertNumberLetterCount(9, 4)
+    assertNumberLetterCount(10, 3)
+    assertNumberLetterCount(20, 6)
+    assertNumberLetterCount(21, 9)
+    assertNumberLetterCount(99, 10)
+    assertNumberLetterCount(100, 10)
+    assertNumberLetterCount(110, 16)
+    assertNumberLetterCount(200, 10)
+    assertNumberLetterCount(256, 21)
+    assertNumberLetterCount(1000, 11)
+    assertNumberLetterCount(1024, 21)
+    assertNumberLetterCount(1100, 21)
+    assertNumberLetterCount(1224, 34)
+    assertNumberLetterCounts(1, 5, 19)
+    assertNumberLetterCounts(1, 1000, 21124)
+  }
+
 }

@@ -1,5 +1,6 @@
 package com.euler.project
 
+import com.euler.project.Euler.{Under20, toLetterCount}
 import com.example._99problems.ArithmeticProblems.{PrimeFactorContext, isPrime}
 
 import scala.annotation.tailrec
@@ -227,4 +228,103 @@ object Euler {
         buffer.toVector.reverse.mkString
       }
   }
+
+  case class CollatzContext() {
+    private val collatzLengths: mutable.Map[Long, Int] = mutable.Map(1L -> 0)
+
+    @tailrec final def tailrecCollatzLength(n: Long, acc: Int = 0): Int = {
+      n match {
+          case 1 => acc + 1
+          case i if i % 2 == 0 => tailrecCollatzLength(n / 2, acc + 1)
+          case _ => tailrecCollatzLength(3 * n + 1, acc + 1)
+        }
+    }
+
+    final def collatzLength(start: Long): Int = {
+      var length = 0
+      var curr = start
+      var matchFound = false
+      while (curr > 1 && !matchFound) {
+        length = collatzLengths.get(curr) match {
+          case Some(matchedLength) =>
+            matchFound = true
+            length + matchedLength
+          case None =>
+            curr = if (curr % 2 == 0) curr / 2 else 3 * curr + 1
+            length + 1
+        }
+      }
+      collatzLengths.put(start, length)
+      length
+    }
+
+    final def RECcollatzLength(n: Long, acc: Int = 0): Int = {
+      collatzLengths.get(n) match {
+        case Some(length) => println(s"match found: $n => $length"); acc + length
+        case None => val length = n match {
+            case 1 => acc
+            case i if i % 2 == 0 => RECcollatzLength(n / 2, acc + 1)
+            case _ => RECcollatzLength(3 * n + 1, acc + 1)
+          }
+          collatzLengths.put(n, length)
+          length
+      }
+    }
+
+    def longestCollatzChain(startUpperBound: Int): Int = {
+      Stream.from(1)
+        .takeWhile(_ < startUpperBound)
+        .maxBy(n => collatzLength(n))
+    }
+
+   // private val collatzCache: mutable.Map[Int, Int => Int] = mutable.Map(1 -> 0)
+//
+//    case class Collatz(n: Int, next: Option[Int] = None) {
+//      lazy val len = 1
+//    }
+
+  }
+
+  def powerDigitSum(n: Int, p: Int): Int = {
+    BigInt(n).pow(p).toString.map(_.asDigit).sum
+  }
+
+  val Under20 = Vector(0, 3, 3, 5, 4, 4, 3, 5, 5, 4, 3, 6, 6, 8, 8, 7, 7, 9, 8, 8)
+  val Tens = Vector(0, 0, 6, 6, 5, 5, 5, 7, 6, 6)
+  val Hundred = 7
+  val Thousand = 8
+  val And = 3
+
+  case class Div(q: Int, m: Int)
+  object Div{
+    def of(n: Int, d: Int): Div = {
+      Div(n/d, n%d)
+    }
+  }
+
+
+  def toLetterCount(acc: Int = 0)(i: Int): Int = {
+    if (i >= 1000) {
+      Div.of(i, 1000) match {
+        case Div(q, 0) => acc + Under20(q) + Thousand
+        case Div(q, m) => toLetterCount(acc + Under20(q) + Thousand)(m)
+      }
+    } else if (i >= 100) {
+      Div.of(i, 100) match {
+        case Div(q, 0) => acc + Under20(q) + Hundred
+        case Div(q, m) => toLetterCount(acc + Under20(q) + Hundred + And)(m)
+      }
+    } else if (i >= 20) {
+      Div.of(i, 10) match {
+        case Div(q, 0) => acc + Tens(q)
+        case Div(q, m) => toLetterCount(acc + Tens(q))(m)
+      }
+    } else acc + Under20(i)
+
+  }
+
+  def numberLetterCount(from: Int, to: Int): Int = {
+    (from to to).map(toLetterCount()).sum
+  }
+
 }
