@@ -354,14 +354,24 @@ class EulerTest extends FunSuite with Matchers {
     namesScoresSum shouldEqual 871198282
   }
 
-  test("23 non abundant sums") {
+
+  ignore("23 non abundant sums") {
     /*
     N is abundant when sum of its proper divisors > N
     all N > 28123 = A + B where A and B are abundant
     Find the sum of all the positive integers which cannot be written as the sum of two abundant numbers.
      */
     sumOfNonAbundantSums shouldEqual 4179871
+  }
 
+  test("24 Lexicographic permutations") {
+    lexicographicPermutations("01") should have size 2
+    lexicographicPermutations("012") should have size 6
+    //lexicographicPermutations("0123456789").drop(999999).next.toLong shouldEqual 2783915460L
+  }
+
+  test ("25 1000-digit Fibonacci number") {
+    fibonacciWithSize(1000) shouldEqual 4782
   }
 
 }

@@ -9,15 +9,15 @@ import scala.io.Source
 
 object Euler {
 
-  def fibonacci: Stream[Int] = {
-    def nextFibonacci(n2: Int, n1: Int): Stream[Int] = {
-      val n = n2 + n1
+  def fibonacci: Stream[BigInt] = {
+    def nextFibonacci(n2: BigInt, n1: BigInt): Stream[BigInt] = {
+      val n: BigInt = n2 + n1
       n #:: nextFibonacci(n1, n)
     }
-    0 #:: 1 #:: nextFibonacci(0,1)
+    BigInt(0) #:: BigInt(1) #:: nextFibonacci(0,1)
   }
 
-  def evenFibonacciSum(until: Int): Long = {
+  def evenFibonacciSum(until: BigInt): BigInt = {
     fibonacci
       .filter(_ % 2 == 0)
       .takeWhile(_ < until)
@@ -419,6 +419,23 @@ object Euler {
     } yield i + j
 
     (1 to LastNonAbundantSum).diff(abundantSums).sum
+  }
+
+  def lexicographicPermutations(s: String): Iterator[String] = {
+    if (s.length == 1) Iterator(s)
+    else
+      for {
+      c <- s.toIterator
+      p <- lexicographicPermutations(s.filterNot(_ == c))
+    } yield c + p
+  }
+
+  def fibonacciWithSize(size: Int): Int = {
+    fibonacci
+      .zipWithIndex
+      .dropWhile{ case (f, _) => f.toString.length < size}
+      .map{ case (_, i) => i }
+      .head
   }
 
 }
