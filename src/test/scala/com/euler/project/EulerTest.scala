@@ -354,4 +354,14 @@ class EulerTest extends FunSuite with Matchers {
     namesScoresSum shouldEqual 871198282
   }
 
+  test("23 non abundant sums") {
+    /*
+    N is abundant when sum of its proper divisors > N
+    all N > 28123 = A + B where A and B are abundant
+    Find the sum of all the positive integers which cannot be written as the sum of two abundant numbers.
+     */
+    sumOfNonAbundantSums shouldEqual 4179871
+
+  }
+
 }

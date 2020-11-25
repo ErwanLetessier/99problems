@@ -375,7 +375,7 @@ object Euler {
   }
 
   def properDivisorSum(n: Int): Int = {
-    val (limit: Int, step: Int) = if (n % 2 == 0) (n / 2, 1) else (math.sqrt(n).toInt, 2)
+    val (limit: Int, step: Int) = if (n % 2 == 0) (n / 2, 1) else (n/3, 2)
     (1 to limit by step)
       .collect { case i if n%i == 0 => i }
       .sum
@@ -404,6 +404,21 @@ object Euler {
       .zipWithIndex
       .map{case (v, i) => v *(i+1)}
       .sum
+  }
+
+  def sumOfNonAbundantSums: Int = {
+    val LastNonAbundantSum = 28123
+    val abundants = (0 to LastNonAbundantSum)
+      .map(properDivisorSum)
+      .zipWithIndex
+      .collect{ case (s, i) if s > i => i}
+
+    val abundantSums = for {
+                               i <- abundants
+      j <- abundants.dropWhile(_ < i).takeWhile(_ <= LastNonAbundantSum - i)
+    } yield i + j
+
+    (1 to LastNonAbundantSum).diff(abundantSums).sum
   }
 
 }
