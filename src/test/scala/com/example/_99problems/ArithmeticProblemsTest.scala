@@ -90,15 +90,8 @@ class ArithmeticProblemsTest extends FunSuite with Matchers {
     cardinalEulerTotient(13) shouldEqual 12
   }
 
-  def time[R](block: => R): R = {
-    val t0 = System.nanoTime()
-    val result = block    // call-by-name
-    val t1 = System.nanoTime()
-    println("Elapsed time: " + (t1 - t0) + "ns")
-    result
-  }
-
   test(" time both euler's totient") {
+    //import Util.time
    // time(cardinalEulerTotient(10090))
     //time(eulerTotient(10090))
     /* obviously applying math formula is much more efficient than iterative brute force */

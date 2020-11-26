@@ -1,8 +1,10 @@
 package com.euler.project
 
 import com.example._99problems.ArithmeticProblems.{PrimeFactorContext, isPrime}
+import com.example._99problems.Util.time
 
 import scala.annotation.tailrec
+import scala.collection.mutable.ArrayBuffer
 import scala.collection.{immutable, mutable}
 import scala.io.Source
 
@@ -473,6 +475,87 @@ object Euler {
     println(s"Res: a= $a b= $b primes= $primeCount")
 
     a*b
+  }
+
+  def numberSpiralDiagonals(width: Int): Int = {
+    val layers = width / 2
+    @tailrec def f(start: Int, step: Int, acc: Int = 0, layer: Int = 1): Int = {
+      if (layer <= layers)
+        f(
+          start + 4 * step,
+          step + 2,
+          acc + 4 * start + 10 * step,
+          layer + 1
+        )
+      else acc
+    }
+    1 + f(1, 2)
+  }
+
+  type MatrixBuffer[T] = ArrayBuffer[ArrayBuffer[T]]
+
+  implicit class MatrixBufferExt[T](m: MatrixBuffer[T]) {
+    def set(x: Int, y: Int, v: T): Unit = {
+      m(y).update(x, v)
+    }
+  }
+
+  sealed trait Direction {
+    def nextCoordinates(x: Int, y: Int): (Int, Int)
+    val reverse: Direction
+  }
+  case object N extends Direction {
+    override def nextCoordinates(x: Int, y: Int): (Int, Int) = (x, y - 1)
+    override val reverse: Direction = S
+  }
+  case object E extends Direction {
+    override def nextCoordinates(x: Int, y: Int): (Int, Int) = (x + 1, y)
+    override val reverse: Direction = W
+  }
+  case object S extends Direction {
+    override def nextCoordinates(x: Int, y: Int): (Int, Int) = (x, y + 1)
+    override val reverse: Direction = N
+  }
+  case object W extends Direction {
+    override def nextCoordinates(x: Int, y: Int): (Int, Int) = (x - 1, y)
+    override val reverse: Direction = E
+  }
+
+  val Directions: List[Direction] = List(E, S, W, N)
+
+  @tailrec def moves(values: List[Int], step: Int = 1, stepsToDo: Int = 1, dirs: List[Direction] = Directions, acc: List[Direction] = Nil): List[Direction] = {
+    values match {
+      case Nil => acc
+      case _ :: tail => if (stepsToDo == 1) {
+        val nextStep = if (List(N, S).contains(dirs.head)) step + 1 else step
+        moves(tail, nextStep, nextStep, dirs.tail :+ dirs.head, dirs.head +: acc)
+      } else moves(tail, step, stepsToDo - 1, dirs, dirs.head +: acc)
+    }
+  }
+
+  def buildSpiral(width: Int): Vector[Vector[Int]] = {
+    val matrix: MatrixBuffer[Int] = ArrayBuffer.fill(width)(ArrayBuffer.fill(width)(0))
+
+    val (x, y) = (width/2, width/2)
+    matrix.set(x, y, 1)
+
+    @tailrec def draw(l: List[(Direction, Int)], x0: Int, y0: Int): Unit = {
+      l match {
+        case Nil => ()
+        case (d, v) :: tail =>
+          val (x, y) = d.nextCoordinates(x0, y0)
+          matrix.set(x, y, v)
+          draw(tail, x, y)
+      }
+    }
+
+    if (width > 1) {
+      val values = (2 to width * width).toList
+      val directions = time(moves(values), "directions")
+      time(draw(directions.reverse.zip(values), x, y), "draw")
+    }
+
+    matrix.map(_.toVector).toVector
   }
 
 }

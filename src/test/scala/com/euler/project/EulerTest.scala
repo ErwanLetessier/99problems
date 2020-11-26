@@ -1,14 +1,12 @@
 package com.euler.project
 
 
+import com.euler.project.Euler._
+import com.example._99problems.ArithmeticProblems.PrimeFactorContext
 import org.junit.runner.RunWith
+import org.scalatest.Inside.inside
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{FunSuite, Matchers}
-import Euler._
-import com.example._99problems.ArithmeticProblems.PrimeFactorContext
-import org.scalatest.Inside.inside
-
-import scala.collection.mutable
 
 @RunWith(classOf[JUnitRunner])
 class EulerTest extends FunSuite with Matchers {
@@ -42,7 +40,7 @@ class EulerTest extends FunSuite with Matchers {
     nthPrime(10001) shouldEqual 104743
   }
 
-  val Series =
+  val Series: String =
     "73167176531330624919225119674426574742355349194934" +
     "96983520312774506326239578318016984801869478851843" +
     "85861560789112949495459501737958331952853208805511" +
@@ -86,7 +84,7 @@ class EulerTest extends FunSuite with Matchers {
     //primesUntil(2000000).sum shouldEqual 142913828922L
   }
 
-  val Grid =
+  val Grid: String =
     "08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08\n" +
     "49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00\n" +
     "81 49 31 73 55 79 14 29 93 71 40 67 53 88 30 03 49 13 36 65\n" +
@@ -124,7 +122,7 @@ class EulerTest extends FunSuite with Matchers {
     //highlyDivisibleTriangular(500) shouldEqual 76576500
   }
 
-  val LargeInts =
+  val LargeInts: String =
     "37107287533902102798797998220837590246510135740250\n"+
     "46376937677490009712648124896970078050417018260538\n"+
     "74324986199524741059474233309513058123726617309629\n"+
@@ -347,7 +345,7 @@ class EulerTest extends FunSuite with Matchers {
     properDivisorSum(220) shouldEqual 284
     properDivisorSum(284) shouldEqual 220
 
-    amicableNumbersSum(10000) shouldEqual 31626
+  //  amicableNumbersSum(10000) shouldEqual 31626
   }
 
   test("22 names score") {
@@ -370,7 +368,7 @@ class EulerTest extends FunSuite with Matchers {
     //lexicographicPermutations("0123456789").drop(999999).next.toLong shouldEqual 2783915460L
   }
 
-  test ("25 1000-digit Fibonacci number") {
+  ignore ("25 1000-digit Fibonacci number") {
     fibonacciWithSize(1000) shouldEqual 4782
   }
 
@@ -378,8 +376,49 @@ class EulerTest extends FunSuite with Matchers {
     longestReciprocalCycles(1000) shouldBe 983
   }
 
-  test("27 quadratic primes") {
+  ignore("27 quadratic primes") {
     quadraticPrimes(1000) shouldEqual -59231
   }
+
+  test("28 Number spiral diagonals") {
+    numberSpiralDiagonals(1) shouldEqual 1
+    numberSpiralDiagonals(3) shouldEqual 25
+    numberSpiralDiagonals(5) shouldEqual 101
+    numberSpiralDiagonals(1001) shouldEqual 669171001
+  }
+
+  val Spiral1 = Vector(Vector(1))
+
+  val Spiral3: Vector[Vector[Int]] = Vector(
+    "7  8  9",
+    "6  1  2",
+    "5  4  3"
+  ).map(_.split("""\W+""").toVector.map(_.toInt))
+
+  val Spiral5: Vector[Vector[Int]] = Vector(
+    "21 22 23 24 25",
+    "20  7  8  9 10",
+    "19  6  1  2 11",
+    "18  5  4  3 12",
+    "17 16 15 14 13"
+  ).map(_.split("""\W+""").toVector.map(_.toInt))
+
+  private def assertDiagonalValuesSum(size: Int, expected: Int) = {
+    val spiral = buildSpiral(size)
+    (incrementedDiagonal(spiral, Point(0, 0)).sum
+      + decrementedYDiagonal(spiral, Point(0, size - 1)).sum
+      - 1) shouldEqual expected
+  }
+
+  test("build clockwise spiral") {
+    buildSpiral(1) shouldEqual Spiral1
+    buildSpiral(3) shouldEqual Spiral3
+    buildSpiral(5) shouldEqual Spiral5
+
+    assertDiagonalValuesSum(5, 101)
+    assertDiagonalValuesSum(101, 692101)
+    assertDiagonalValuesSum(1001, 669171001)
+  }
+
 
 }
