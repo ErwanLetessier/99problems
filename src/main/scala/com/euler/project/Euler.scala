@@ -438,4 +438,41 @@ object Euler {
       .head
   }
 
+  def longestReciprocalCycles(below: Int): Int = {
+    def cycleLength(denominator: Int): Int = {
+      def cl(r: Int = 10, acc: Int = 0): Int = {
+        if (r != 10 || acc < 1)
+          cl(r % denominator * 10, acc + 1)
+        else acc
+      }
+      cl()
+    }
+
+    (2 to 1000)
+      .filterNot(i => i % 2 == 0 || i % 5 == 0)
+      .map(i => (i, cycleLength(i)))
+      .maxBy {case (_, l) => l}
+      ._1
+  }
+
+  def quadraticPrimes(absLimit: Int): Int = {
+    val pfc = PrimeFactorContext(absLimit)
+    val (a, b, primeCount) = (for {
+      b <- pfc.primes
+      a <- 1 - absLimit to absLimit by 2
+    } yield (a, b)
+    ).map{ case (a, b) =>
+      val primeCount = Stream.from(0)
+        .map { n => n * n + a * n + b }
+        .takeWhile(pfc.primes.contains)
+        .length
+      (a, b, primeCount)
+    }
+    .maxBy{ case (_, _, primeCount) => primeCount }
+
+    println(s"Res: a= $a b= $b primes= $primeCount")
+
+    a*b
+  }
+
 }

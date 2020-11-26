@@ -374,4 +374,12 @@ class EulerTest extends FunSuite with Matchers {
     fibonacciWithSize(1000) shouldEqual 4782
   }
 
+  test("26 Reciprocal cycles") {
+    longestReciprocalCycles(1000) shouldBe 983
+  }
+
+  test("27 quadratic primes") {
+    quadraticPrimes(1000) shouldEqual -59231
+  }
+
 }
