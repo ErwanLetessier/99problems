@@ -4,8 +4,8 @@ import com.example._99problems.ArithmeticProblems.{PrimeFactorContext, isPrime}
 import com.example._99problems.Util.time
 
 import scala.annotation.tailrec
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
-import scala.collection.{immutable, mutable}
 import scala.io.Source
 
 
@@ -442,7 +442,7 @@ object Euler {
 
   def longestReciprocalCycles(below: Int): Int = {
     def cycleLength(denominator: Int): Int = {
-      def cl(r: Int = 10, acc: Int = 0): Int = {
+      @tailrec def cl(r: Int = 10, acc: Int = 0): Int = {
         if (r != 10 || acc < 1)
           cl(r % denominator * 10, acc + 1)
         else acc
@@ -450,7 +450,7 @@ object Euler {
       cl()
     }
 
-    (2 to 1000)
+    (2 to below)
       .filterNot(i => i % 2 == 0 || i % 5 == 0)
       .map(i => (i, cycleLength(i)))
       .maxBy {case (_, l) => l}
@@ -523,14 +523,21 @@ object Euler {
 
   val Directions: List[Direction] = List(E, S, W, N)
 
-  @tailrec def moves(values: List[Int], step: Int = 1, stepsToDo: Int = 1, dirs: List[Direction] = Directions, acc: List[Direction] = Nil): List[Direction] = {
+
+
+  @tailrec def moves(values: List[Int], step: Int = 1, stepsToDo: Int = 1, directions: List[Direction] = Nil, acc: List[Direction] = Nil): List[Direction] = {
+    val dirs: List[Direction] = if (directions == Nil) Directions else directions
     values match {
       case Nil => acc
       case _ :: tail => if (stepsToDo == 1) {
         val nextStep = if (List(N, S).contains(dirs.head)) step + 1 else step
-        moves(tail, nextStep, nextStep, dirs.tail :+ dirs.head, dirs.head +: acc)
+        moves(tail, nextStep, nextStep, dirs.tail, dirs.head +: acc)
       } else moves(tail, step, stepsToDo - 1, dirs, dirs.head +: acc)
     }
+  }
+
+  def nextMoves(values: List[Int]): List[Direction] = {
+    moves(values).reverse
   }
 
   def buildSpiral(width: Int): Vector[Vector[Int]] = {
@@ -551,11 +558,42 @@ object Euler {
 
     if (width > 1) {
       val values = (2 to width * width).toList
-      val directions = time(moves(values), "directions")
-      time(draw(directions.reverse.zip(values), x, y), "draw")
+      val directions = time(nextMoves(values), "directions")
+      time(draw(directions.zip(values), x, y), "draw")
     }
 
     matrix.map(_.toVector).toVector
+  }
+
+  def distinctPowers(from: Int, to: Int): Int = {
+    (for {
+      a <- (from to to).map(BigInt(_))
+      b <- from to to
+    } yield a.pow(b)
+      ).distinct.length
+  }
+
+  def coinsSums(target: Int, coinValues: List[Int]): Int = {
+    def sums(target: Int, coinValues: List[Int]): Int = {
+      coinValues match {
+        case Nil => 0
+        case head :: tail =>
+          if (head > target) 0
+          else if (head == target) 1
+          else sums(target - head, coinValues) + sums(target, tail)
+      }
+    }
+    sums(target, coinValues)
+  }
+
+  def iterSum(target: Int, coinValues: List[Int]): Int = {
+    val b: ArrayBuffer[Int] = ArrayBuffer.fill(target+1)(0)
+    b.update(0, 1)
+    for {
+      x <- coinValues
+      i <- x to target
+    } yield b.update(i, b(i)+b(i-x))
+    b(target)
   }
 
 }

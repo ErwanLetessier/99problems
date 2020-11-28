@@ -417,7 +417,37 @@ class EulerTest extends FunSuite with Matchers {
 
     assertDiagonalValuesSum(5, 101)
     assertDiagonalValuesSum(101, 692101)
-    assertDiagonalValuesSum(1001, 669171001)
+    //assertDiagonalValuesSum(1001, 669171001)
+  }
+
+
+  test("29 distinct powers") {
+    distinctPowers(2, 5) shouldEqual 15
+    distinctPowers(2, 100) shouldEqual 9183
+  }
+
+  def equalsSumsOfDigitsAtNthPower(power: Int)(i: Int): Boolean = {
+    i == i.toString
+      .map(_.asDigit)
+      .map(i=> math.pow(i, power).toInt)
+      .sum
+  }
+
+  test("30 Digit fifth powers") {
+    List[Int](3416, 8028, 9744).filter(equalsSumsOfDigitsAtNthPower(4)) should have size 0
+    List[Int](1634, 8208, 9474).filter(equalsSumsOfDigitsAtNthPower(4)) should have size 3
+
+    //(2 to 354294).filter(equalsSumsOfDigitsAtNthPower(5)).sum shouldEqual 443839
+  }
+
+  test("31 coins sums") {
+    val coinValues = List(1, 2, 5, 10, 20, 50, 100, 200)
+    coinsSums(200, List(200)) shouldEqual 1
+    coinsSums(200, List(100)) shouldEqual 1
+    coinsSums(200, List(100, 200)) shouldEqual 2
+    coinsSums(200, List(50, 100, 200)) shouldEqual 4
+    coinsSums(200, coinValues) shouldEqual 73682
+    iterSum(200, coinValues) shouldEqual 73682
   }
 
 
