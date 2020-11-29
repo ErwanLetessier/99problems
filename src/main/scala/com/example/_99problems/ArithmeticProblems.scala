@@ -70,10 +70,7 @@ object ArithmeticProblems {
 
 
   def gcd(a: Int, b: Int): Int = {
-    val pfc = PrimeFactorContext(List(a,b).max)
-    val aFactors = 1 +: pfc.primeFactors(a)
-    val bFactors = 1 +: pfc.primeFactors(b)
-    (aFactors intersect bFactors).product
+    if (b == 0) a else gcd(b, a%b)
   }
 
   def coprime(a: Int, b: Int): Boolean = {

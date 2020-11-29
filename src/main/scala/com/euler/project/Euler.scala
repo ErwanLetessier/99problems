@@ -1,6 +1,7 @@
 package com.euler.project
 
-import com.example._99problems.ArithmeticProblems.{PrimeFactorContext, isPrime}
+import com.example._99problems.ArithmeticProblems.{PrimeFactorContext, gcd, isPrime}
+import com.example._99problems.ListProblems.rotateLeft
 import com.example._99problems.Util.time
 
 import scala.annotation.tailrec
@@ -47,8 +48,12 @@ object Euler {
     primeFactors(n).last
   }
 
+  def isPalindromeString(s: String): Boolean = {
+    s == s.reverse
+  }
+
   def isPalindrome(n: Int): Boolean = {
-    n.toString == n.toString.reverse
+    isPalindromeString(n.toString)
   }
 
   def largestPalindromeProduct(min: Int, max: Int): (Int, Int) = {
@@ -596,4 +601,107 @@ object Euler {
     b(target)
   }
 
+  def pandigitalProducts: Int = {
+    (for {
+      i <- 2 until 10000
+      j <- 2 until 10000 / i
+      k = i * j
+      s = Vector(i, j, k).mkString
+      if s.length == 9 && (1 to 9).mkString.forall(s.contains(_))
+    } yield k
+    ).distinct
+     .sum
+  }
+
+  def digitCancellingFractions: Int = {
+    val (ns: Int, ds: Int) = (for {
+      n <- 1 to 9
+      d <- n + 1 to 9
+      k <- 1 to 9
+      if n * (10 * k + d) == d * (10 * n + k)
+    } yield (10 * n + k, 10 * k + d)
+    ).reduceLeft( (a, c) => (a, c) match { case ((an, ad), (cn, cd)) => (an * cn, ad * cd) } )
+    ds / gcd(ns, ds)
+  }
+
+  def factorialSequence(till: Int): Vector[Int] = {
+    @tailrec def f(current: Int, acc: List[Int] = Nil): List[Int] = {
+      if (current == till) acc
+      else {
+        val factorial = if (current < 2) 1 else current * acc.head
+        f(current + 1,  factorial +: acc)
+      }
+    }
+    f(0).reverse.toVector
+  }
+
+  @tailrec def digits(i: Int, acc: List[Int] = Nil): List[Int] = {
+    if (i == 0) acc
+    else Div.of(i, 10) match {
+      case Div(q, r) => digits(q, r +: acc)
+    }
+  }
+
+  def digitFactorialsSum: Int = {
+    val factorials = factorialSequence(10)
+    val ints = Stream.from(11)
+    ints.map(digits(_).map(factorials(_)).sum)
+      .zip(ints.takeWhile(_ < 1500000))
+      .collect { case (f, i) if f == i => i }
+      .sum
+  }
+
+  def digitPermutations(ds: List[Int]): List[List[Int]] = {
+    def p(ds: List[Int]): List[List[Int]] = {
+      if (ds.length == 1) List(ds)
+      else
+        for {
+          (c, i) <- ds.zipWithIndex
+          (l, r) = ds.splitAt(i)
+          p <- digitPermutations(l ++ r.drop(1))
+        } yield c +: p
+    }
+    p(ds).distinct
+  }
+
+  def rotations(original: List[Int]): List[List[Int]] = {
+    @tailrec def r(acc: List[List[Int]], rotationsLeft: Int): List[List[Int]] = {
+      if (rotationsLeft > 0)
+        r(rotateLeft(1, acc.head) +: acc, rotationsLeft -1)
+      else acc
+    }
+    r(List(original), original.size - 1)
+  }
+
+  def digitsToInt(digits: List[Int]): Int = {
+    @tailrec def d(digits: List[Int], multiplier: Int = 1, acc: Int = 0): Int = {
+      digits match {
+        case Nil => acc
+        case head :: tail => d(tail, multiplier * 10, acc + head * multiplier)
+      }
+    }
+    d(digits.reverse)
+  }
+
+  def circularPrimes(below: Int): List[Int] = {
+    val primes = PrimeFactorContext(below).primes
+    (primes.takeWhile(_ < 10)
+      ++ primes.dropWhile(_ < 10)
+      .map(digits(_))
+      .filterNot(digits => (0 to 9 by 2).exists(digits.contains))
+      .flatMap { x =>
+        Option(rotations(x).map(digitsToInt))
+        .filter(_.forall(primes.contains))
+        .getOrElse(Nil)
+      }
+      ).distinct.sorted
+  }
+
+  def doubleBasePalindromeSum(below: Int): Int = {
+    (1 until below)
+      .filter(isPalindrome)
+      .map(i => (i, i.toBinaryString))
+      .collect { case (i, b) if isPalindromeString(b) => i }
+      .sum
+  }
 }

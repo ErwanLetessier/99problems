@@ -450,5 +450,26 @@ class EulerTest extends FunSuite with Matchers {
     iterSum(200, coinValues) shouldEqual 73682
   }
 
+  test ("32 Pandigital products") {
+    pandigitalProducts shouldEqual 45228
+  }
+
+  test("33 Digit Cancelling Fractions") {
+    digitCancellingFractions shouldEqual 100
+  }
+
+  ignore("34 digit factorials") {
+    digitFactorialsSum shouldEqual 40730
+  }
+
+  test("35 Circular primes") {
+    circularPrimes(100) shouldEqual List(2, 3, 5, 7, 11, 13, 17, 31, 37, 71, 73, 79, 97)
+    circularPrimes(1000000) should have size 55
+  }
+
+  test("36 double-base palindromes") {
+    doubleBasePalindromeSum(1000000) shouldEqual 872187
+  }
+
 
 }
