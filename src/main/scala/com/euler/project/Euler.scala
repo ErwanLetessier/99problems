@@ -8,7 +8,7 @@ import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
-
+import cats.implicits._
 
 object Euler {
 
@@ -683,16 +683,24 @@ object Euler {
     d(digits.reverse)
   }
 
+  val EvenDigits = 0 to 9 by 2
+  def containsEvenDigit(digits: List[Int]): Boolean = EvenDigits.exists(digits.contains)
+
   def circularPrimes(below: Int): List[Int] = {
     val primes = PrimeFactorContext(below).primes
     (primes.takeWhile(_ < 10)
-      ++ primes.dropWhile(_ < 10)
-      .map(digits(_))
-      .filterNot(digits => (0 to 9 by 2).exists(digits.contains))
-      .flatMap { x =>
-        Option(rotations(x).map(digitsToInt))
-        .filter(_.forall(primes.contains))
-        .getOrElse(Nil)
+      ++ {
+      val (limitedPrimes, digitSets) = primes.dropWhile(_ < 10)
+        .map(p => (p, digits(p)))
+        .filterNot { case(_, digits) => containsEvenDigit(digits) }
+        .unzip
+
+        digitSets.flatMap { x =>
+          Option(rotations(x).map(digitsToInt))
+            .filter(_.forall(limitedPrimes.contains))
+            .sequence
+            .flatten
+        }
       }
       ).distinct.sorted
   }
@@ -704,4 +712,5 @@ object Euler {
       .collect { case (i, b) if isPalindromeString(b) => i }
       .sum
   }
+
 }
