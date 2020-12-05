@@ -10,6 +10,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.io.Source
 import cats.implicits._
 
+
 object Euler {
 
   def fibonacci: Stream[BigInt] = {
@@ -697,7 +698,12 @@ object Euler {
 
         digitSets.flatMap { x =>
           Option(rotations(x).map(digitsToInt))
-            .filter(_.forall(limitedPrimes.contains))
+            .filter(_.forall(
+              n => limitedPrimes
+                    .dropWhile(_ < n)
+                    .headOption
+                    .contains(n))
+            )
             .sequence
             .flatten
         }
@@ -711,6 +717,48 @@ object Euler {
       .map(i => (i, i.toBinaryString))
       .collect { case (i, b) if isPalindromeString(b) => i }
       .sum
+  }
+
+  def trucatablePrimes(below: Int): List[Int] = {
+    val primes = PrimeFactorContext(below).primes
+
+    val limitedPrimes = {
+      List(
+        primes.dropWhile(_ < 10).takeWhile(_ < 30),
+        primes.dropWhile(_ < 30)
+          .map(p => (p, digits(p)))
+          .collect { case(p, digits) if !containsEvenDigit(digits) => p }
+      )
+      .flatten
+    }
+
+    val truncatedPrimes = primes.takeWhile(_ < 10) ++ limitedPrimes
+
+    val divisors = Stream.from(1).map(math.pow(10, _).toInt).takeWhile(_ <  below).toList
+
+    def allTruncatedFromLeftArePrime(p: Int): Boolean = {
+      divisors.reverse
+        .dropWhile(_ > p)
+        .map(p % _)
+        .forall(n => truncatedPrimes.dropWhile(_ < n)
+          .headOption
+          .contains(n))
+    }
+
+    def allTruncatedFromRightArePrime(p: Int): Boolean = {
+      divisors
+        .takeWhile(_ < p)
+        .map(p / _)
+        .forall(n => truncatedPrimes.dropWhile(_ < n)
+          .headOption
+          .contains(n)
+        )
+    }
+
+    limitedPrimes
+      .filter(allTruncatedFromLeftArePrime)
+      .filter(allTruncatedFromRightArePrime)
+
   }
 
 }

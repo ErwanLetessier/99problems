@@ -471,5 +471,11 @@ class EulerTest extends FunSuite with Matchers {
     doubleBasePalindromeSum(1000000) shouldEqual 872187
   }
 
+  test("37 truncatable primes") {
+    val tp = trucatablePrimes(740000)
+    tp should have size 11
+    tp.sum shouldEqual 748317
+  }
+
 
 }
